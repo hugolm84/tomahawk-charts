@@ -1,0 +1,77 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Copyright (C) Hugo Lindström <hugolm84@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+from scrapy.selector import Selector
+from tomahawkspider import TomahawkCrawlSpider
+from tomahawk.helpers.tomahawkspiderhelper import TomahawkSpiderHelper, extract
+from tomahawk.itemloaders import TomahawkItemLoader
+
+
+class $classname(TomahawkSpiderHelper, TomahawkCrawlSpider):
+
+    name = '$name'
+
+    start_urls = [
+        'http://www.$domain/',
+    ]
+
+    allowed_domains = [
+       '$domain'
+    ]
+
+    next_page_xpath = './/path-to-next-link'
+
+    rules = (
+        TomahawkCrawlSpider.follow_link_as_chart(
+            xpath = './/path-to-link',
+        ),
+        TomahawkCrawlSpider.follow_link_as_next(
+            xpath = next_page_xpath,
+            allow=[r'\?page=[1-9]']
+        ),
+    )
+
+    def do_create_chart(self, chart, response):
+
+        name = extract('//h1[@id="page-title"]/text()', chart.selector)
+
+        chart.add_value("name", name)
+        chart.add_value("id", name)
+        chart.add_value("type", self.extract_type_from_name(name))
+        chart.add_value("description", "Some chart description")
+
+        return chart
+
+    def do_parse(self, chart, response):
+
+        selector = Selector(response)
+        items_xpath = './/div[@class="items"]'
+        items = selector.xpath(items_xpath)
+
+        for itemSelector in items:
+            item = TomahawkItemLoader(selector=itemSelector)
+            item.add_xpath("rank", './/span[@class="rank"]/text()')
+            item.add_xpath("track", './/span[@class="track"]/text()')
+            item.add_value("artist", './/span[@class="artist"]/text()')
+
+            chart.add_value("list", item.load_item())
+
+        # If we can find a next_page link, process the item as we consider it done
+        if not selector.xpath(self.next_page_xpath):
+            return self.do_process_item(chart)
+        # We know this chart has more data to be parsed, return None
+        return None
