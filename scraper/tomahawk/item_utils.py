@@ -16,4 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 def strip(str):
+    if isinstance(str, int):
+        return str
     return u' '.join(str.strip().split())
