@@ -18,6 +18,7 @@
 import re
 from scrapy import log
 
+
 _matches = lambda value, regexs: any((r.search(value) for r in regexs))
 
 def unslugify(value):
@@ -93,3 +94,18 @@ class TomahawkSpiderHelper(object):
             return next(val for key, val in self.__types.iteritems() if key.lower() in name.lower())
         except StopIteration:
             None
+
+    def make_sig_md5(self):
+        import time
+        import hashlib
+        pre_sig = self.apiKey+self.apiSecret+str(int(time()))
+        m = hashlib.md5()
+        m.update(pre_sig)
+        return m.hexdigest()
+
+    def signed_url(self, method, args, request_args=None):
+        import urllib
+        args['apikey'] = self.apiKey
+        args['sig'] = self.make_sig_md5()
+        return "%s%s?%s%s" % (self.baseUrl,method, urllib.urlencode(args),
+                              request_args if request_args is not None else "")
