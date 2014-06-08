@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Copyright (C) 2014 Hugo Lindström <hugolm84@gmail.com>
+# Copyright (C) Hugo Lindström <hugolm84@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# !!NOTE: PYTHONPATH to this project basedir need to be set,
-#       Eg. export PYTHONPATH=/path/to/src/
 
 from scrapy.http.request import Request
 import json
