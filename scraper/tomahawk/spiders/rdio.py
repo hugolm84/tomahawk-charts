@@ -39,8 +39,6 @@ class RdioSpider(TomahawkCrawlSpider):
 
     base_types = ["Artist", "Album", "Track"]
 
-    def __init__(self, *args, **kwargs):
-        super(RdioSpider, self).__init__(*args, **kwargs)
 
     def start_requests(self):
         for base_type in self.base_types:
