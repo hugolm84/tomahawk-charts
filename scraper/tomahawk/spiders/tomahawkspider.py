@@ -85,7 +85,10 @@ class TomahawkCrawlSpider(TomahawkSpiderHelper,CrawlSpider):
         return item_type.lower()
 
     def __create_chart__(self, response):
-        selector = Selector(response)
+        try:
+            selector = Selector(response)
+        except AttributeError:
+            selector = None
         chart = TomahawkChartLoader(selector=selector)
         chart.add_value("origin", response.url)
         chart.add_value("source", {'spider': self.name})
