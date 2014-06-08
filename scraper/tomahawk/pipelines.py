@@ -17,43 +17,42 @@
 
 import os
 from scrapy import signals
-from scrapy.contrib.exporter import JsonLinesItemExporter, JsonItemExporter
+from scrapy.contrib.exporter import JsonLinesItemExporter
 from scrapy.exceptions import DropItem
+from settings import FEED_FORMAT, BOT_NAME
 
 
 class TomahawkScrapingPipeline(object):
 
-    _feed_store = "items/%s/%s/"
-    item_store = None
-    source_exporter = None
+    store_path = None
 
     @classmethod
     def from_crawler(cls, crawler):
         pipeline = cls()
         crawler.signals.connect(pipeline.spider_opened, signals.spider_opened)
-        crawler.signals.connect(pipeline.spider_closed, signals.spider_closed)
+        #crawler.signals.connect(pipeline.spider_closed, signals.spider_closed)
         return pipeline
 
     def spider_opened(self, spider):
-        store_path = self._feed_store % (spider.crawler.settings['BOT_NAME'], spider.name)
-        self.item_store = self.create_spider_dir(store_path)
-        #self.source_exporter = JsonItemExporter(open(self.item_store + "metadata.jl", "w"))
-        #self.source_exporter.start_exporting()
-
-    def spider_closed(self, spider):
-        #self.source_exporter.finish_exporting()
-        pass
+        store_path = "items/%s/%s/" % (BOT_NAME, spider.name)
+        self.store_path = self.create_spider_dir(store_path)
 
     def create_spider_dir(self, store):
         if not os.path.exists(os.path.dirname(store)):
             os.makedirs(os.path.dirname(store))
         return store
 
+    def item_storage_path(self, id):
+        item_storage_path = "%s%s.%s" % (self.store_path, id, FEED_FORMAT)
+        return item_storage_path
+
     def export_item(self, item):
-        item_exporter = JsonLinesItemExporter(open(self.item_store+item["id"], "w"))
+        storage_file = open(self.item_storage_path(item["id"]), "w")
+        item_exporter = JsonLinesItemExporter(storage_file)
         item_exporter.start_exporting()
         item_exporter.export_item(item)
         item_exporter.finish_exporting()
+        storage_file.close()
 
     def process_item(self, item, spider):
         if not item['id'] or len(item['id'].strip()) == 0:
