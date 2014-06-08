@@ -17,7 +17,14 @@ TEMPLATES_DIR = os.getcwd()+'/tomahawk/templates'
 SPIDER_MODULES = ['tomahawk.spiders']
 NEWSPIDER_MODULE = 'tomahawk.spiders'
 DEFAULT_ITEM_CLASS = 'tomahawk.items.TomahawkItem'
-ITEM_PIPELINES = {'tomahawk.pipelines.TomahawkScrapingPipeline' : 1 }
+
+ITEM_PIPELINES = {
+    'tomahawk.pipelines.TomahawkScrapingPipeline' : 1
+}
+DOWNLOADER_MIDDLEWARES = {
+    'tomahawk.middleware.OauthMiddleware.OauthMiddleware': 400,
+}
+
 USER_AGENT = 'Tomahawk Chart Service (+http://www.gettomahawk.com)'
 FEED_FORMAT = 'json'
 FEED_STORE_EMPTY = True
