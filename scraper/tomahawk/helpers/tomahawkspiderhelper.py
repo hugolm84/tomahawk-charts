@@ -59,19 +59,27 @@ class TomahawkSpiderHelper(object):
     def match_type_fuzzy(self, val):
         if match_any(val, self.album_charts):
             return self.AlbumType
-        if match_any(val, self.artist_charts):
+        elif match_any(val, self.artist_charts):
             return self.ArtistType
-        if match_any(val, self.track_charts):
+        elif match_any(val, self.track_charts):
             return self.TrackType
         return None
 
-    def origin_to_name(self, origin):
-        origin = origin.rsplit('/',1)[1]
-        return unslugify(origin)
+    def extract_type_from_url(self, chart):
+        origin = unslugify(chart.get_output_value("origin"))
+        for word in origin.split("/"):
+            type_from_origin = self.type_from_name(word) or self.match_type_fuzzy(word)
+            if type_from_origin:
+                self.log("Extracted type using origin (%s => %s) <GET %s>" % (word, type_from_origin, origin),
+                         log.WARNING)
+                return type_from_origin
+
+        self.log("Failed to extract type using origin SPLIT <GET %s>" % (origin),
+                 log.WARNING)
+        return None
 
     def extract_type(self, chart):
         name = chart.get_output_value("name")
-        origin = chart.get_output_value("origin")
 
         type_from_name = self.type_from_name(name)
         if type_from_name:
@@ -81,13 +89,7 @@ class TomahawkSpiderHelper(object):
         if fuzzy:
             return fuzzy
 
-        for word in self.origin_to_name(origin).split():
-            type_from_origin = self.type_from_name(word)
-            if type_from_origin:
-                self.log("Extracted type using origin (%s => %s) <GET %s>" % (word, type_from_origin, origin),
-                                 log.WARNING)
-                return type_from_origin
-        return None
+        return self.extract_type_from_url(chart)
 
     def type_from_name(self, name):
         try:
