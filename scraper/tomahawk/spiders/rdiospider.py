@@ -39,7 +39,6 @@ class RdioSpider(TomahawkCrawlSpider):
 
     base_types = ["Artist", "Album", "Track"]
 
-
     def start_requests(self):
         for base_type in self.base_types:
             for region in self.regions:
@@ -65,8 +64,10 @@ class RdioSpider(TomahawkCrawlSpider):
         for rank, items in enumerate(response['result']):
             entry = TomahawkItemLoader()
             entry.add_value(item_type, items.pop('name'))
+
             if item_type != TomahawkSpiderHelper.ArtistType.lower():
                 entry.add_value("artist",items.pop("artist"))
+
             entry.add_value("rank", rank)
             chart.add_value("list", entry.load_item())
 

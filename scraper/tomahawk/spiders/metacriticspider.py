@@ -42,7 +42,7 @@ class MetacriticSpider(TomahawkCrawlSpider):
         ),
         TomahawkCrawlSpider.follow_link_as_next(
             xpath=next_page_xpath,
-            allow=[r'\?page=[1-2]']
+            allow=[r'\?page=[1-9]']
         ),
     )
 
@@ -55,7 +55,6 @@ class MetacriticSpider(TomahawkCrawlSpider):
 
     def do_create_chart(self, chart, response):
         name = self.get_current_genre(chart.selector)
-        chart.add_value("id", name)
         chart.add_value("name", name)
         chart.add_value("type", TomahawkSpiderHelper.AlbumType)
         chart.add_xpath("description", self.current_page_name_xpath)
@@ -78,7 +77,7 @@ class MetacriticSpider(TomahawkCrawlSpider):
             return self.do_process_item(chart)
 
         next_page = extract(self.next_page_xpath+"/@href", selector)[-1:]
-        if next_page and int(next_page) > 2:
+        if next_page and int(next_page) > 9:
             self.log("Maximum depth! Processing")
             return self.do_process_item(chart)
 

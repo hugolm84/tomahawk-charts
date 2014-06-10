@@ -48,7 +48,6 @@ class SoundCloudWallSpider(TomahawkCrawlSpider):
 
     def do_create_chart(self, chart, response):
         name = "%s %s-%s" % (self.baseTitle, response.meta['year'], response.meta['month'])
-        chart.add_value("id", name)
         chart.add_value("name", name)
         chart.add_value("type", TomahawkSpiderHelper.TrackType)
         chart.add_value("description", "SoundCloudWall publishes a playlist of the 1000 most influential tracks on "

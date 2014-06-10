@@ -35,7 +35,6 @@ class BillboardSpider(TomahawkCrawlSpider):
     rules = (
         TomahawkCrawlSpider.follow_link_as_chart(
             xpath=chart_items_xpath,
-            #allow=['/billboard-200$', '/hot-100']
         ),
         TomahawkCrawlSpider.follow_link_as_next(
             xpath=next_page_xpath,
@@ -50,7 +49,6 @@ class BillboardSpider(TomahawkCrawlSpider):
 
     def do_create_chart(self, chart, response):
         name = extract('//h1[@id="page-title"]/text()', chart.selector)
-        chart.add_value("id", name)
         chart.add_value("name", name)
         chart.add_value("type", self.extract_type(chart))
         chart.add_value("description", 'Description')
