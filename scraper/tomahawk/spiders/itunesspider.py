@@ -64,8 +64,8 @@ class ItunesSpider(TomahawkCrawlSpider):
                 url = self.generate_url(prefix=chart['urlPrefix'], cc=meta['cc'])
                 meta['name'] = chart['display']
                 requests.append(Request("{url}/{suffix}".format(url=url, suffix=chart['urlSuffix']),
-                        callback=self.__parse_as_chart__,
-                        meta=meta))
+                                        callback=self.__parse_as_chart__,
+                                        meta=meta))
 
                 for genre_chart in cat['genres']['list']:
                     genre_id = genre_chart['value']
@@ -80,19 +80,24 @@ class ItunesSpider(TomahawkCrawlSpider):
 
     def do_create_chart(self, chart, response):
         name = response.meta['name']
-        id = name+response.meta['cc_name']
+        c_type = self.extract_type_from_url(response.url)
+        c_geo = response.meta['cc_name']
+        c_desc = "%s %s %s" % (c_geo, name, c_type)
+
         chart.add_value("name", name)
-        chart.add_value("type", self.extract_type_from_url(chart))
-        chart.add_value("geo", response.meta['cc_name'])
+        chart.add_value("type", c_type)
+        chart.add_value("geo", c_geo)
+        chart.add_value("description", c_desc)
+
         if 'genre' in response.meta:
-            chart.add_value("genre", response.meta['genre'])
-            id = id + response.meta['genre']
-        chart.add_value("id", id)
-        chart.add_value("description", "test")
+            genre = response.meta['genre']
+            c_id = genre
+            chart.add_value("description", "%s in %s" % (c_desc, genre))
+
+        chart.add_value("id", name+c_id+c_geo)
         return chart
 
     def do_parse(self, chart, response):
-        print response.encoding
         selector = Selector(response=response)
         selector.register_namespace('itms', 'http://phobos.apple.com/rss/1.0/modules/itms/')
         selector.register_namespace('ns', 'http://www.w3.org/2005/Atom')
