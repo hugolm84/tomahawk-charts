@@ -35,6 +35,9 @@ class TomahawkChartLoader(ItemLoader):
     list_out = PassThrough()
 
     def load_item(self):
+        if not self._values['id']:
+            self.add_value('id', self._values['name'])
+
         item = self.item
         required_missing_fields = set(item.fields.keys()) - set(self._values.keys())
 
