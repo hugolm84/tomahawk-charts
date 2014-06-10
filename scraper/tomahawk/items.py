@@ -24,6 +24,7 @@ from scrapy.item import Item, Field
 class TomahawkChartItem(Item):
     id, name, description, source, origin, type, list = (Field(),)*7
     parse_start_date, parse_end_date = (Field(),)*2
+    have_extra, geo, genre = (Field(),)*3
     size = Field()
 
 
