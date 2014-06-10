@@ -25,12 +25,12 @@ class RedditSpider(TomahawkCrawlSpider):
 
     name = "Reddit"
     baseUrl = "http://rcharts.bensbit.co.uk"
-    sections = ["Music", "listentothis", "dubstep", "trance", "treemusic", "IndieFolk", "metal", "electronicmusic",
-                "punk", "rap"]
     apiKey = "3f578b3d250b47adb24e193ba933a9b80f31d3f9"
+    start_urls = ['http://rcharts.bensbit.co.uk/subreddits.json']
 
-    def start_requests(self):
-        for section in self.sections :
+    def parse(self, response):
+        response = json.loads(response.body_as_unicode())
+        for section in response :
             yield Request('{baseUrl}/r/{section}.json'.format(baseUrl=self.baseUrl, section=section),
                           callback=self.__parse_as_chart__,
                           meta={'section': section})
