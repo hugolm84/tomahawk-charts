@@ -13,6 +13,7 @@ BOT_NAME = 'tomahawk'
 LOG_LEVEL = 'DEBUG'
 COOKIES_ENABLED = False
 RETRY_ENABLED = False
+AJAXCRAWL_ENABLED = True
 TEMPLATES_DIR = os.getcwd()+'/tomahawk/templates'
 SPIDER_MODULES = ['tomahawk.spiders']
 NEWSPIDER_MODULE = 'tomahawk.spiders'
@@ -23,6 +24,7 @@ ITEM_PIPELINES = {
 }
 DOWNLOADER_MIDDLEWARES = {
     'tomahawk.middleware.OauthMiddleware.OauthMiddleware': 400,
+    'scrapy.contrib.downloadermiddleware.ajaxcrawl.AjaxCrawlMiddleware': 401,
 }
 
 USER_AGENT = 'Tomahawk Chart Service (+http://www.gettomahawk.com)'
