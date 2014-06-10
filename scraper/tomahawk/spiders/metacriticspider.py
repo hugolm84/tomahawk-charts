@@ -16,7 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from scrapy.selector import Selector
-from scrapy.log import log
 from tomahawkspider import TomahawkCrawlSpider
 from tomahawk.helpers.tomahawkspiderhelper import extract, TomahawkSpiderHelper
 from tomahawk.itemloaders import TomahawkItemLoader
