@@ -65,8 +65,8 @@ class TomahawkSpiderHelper(object):
             return self.TrackType
         return None
 
-    def extract_type_from_url(self, chart):
-        origin = unslugify(chart.get_output_value("origin"))
+    def extract_type_from_url(self, url):
+        origin = unslugify(url)
         for word in origin.split("/"):
             type_from_origin = self.type_from_name(word) or self.match_type_fuzzy(word)
             if type_from_origin:
@@ -89,7 +89,7 @@ class TomahawkSpiderHelper(object):
         if fuzzy:
             return fuzzy
 
-        return self.extract_type_from_url(chart)
+        return self.extract_type_from_url(chart.get_output_value("origin"))
 
     def type_from_name(self, name):
         try:
