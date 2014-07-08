@@ -27,19 +27,22 @@ class ItunesSpider(TomahawkCrawlSpider):
 
     start_urls = [
         'https://rss.itunes.apple.com/data/lang/en-US/common.json',
-        ]
+    ]
 
     available_feeds = 'http://itunes.apple.com/WebObjects/MZStoreServices.woa/wa/RSS/wsAvailableFeeds?cc=%s'
     max_items = 100
 
+    new_rls = ["featuredalbums", "newreleases", "justadded"]
     track_charts = ["topsongs"]
-    album_charts = ["newreleases", "justadded", "featuredalbums", "topalbums"]
+    album_charts = new_rls + ["topalbums"]
 
     def parse(self, response):
         response = json.loads(response.body_as_unicode())
-        for cc in response['feed_country']:
-            if not "_" in cc:
-                yield Request(url=self.available_feeds % cc,
+        cc_en = filter(lambda cc: '_en' in cc, response['feed_country'])
+        cc_loc = filter(lambda cc: '_' not in cc and cc+'_en' not in cc_en, response['feed_country'])
+
+        for cc in cc_en+cc_loc:
+            yield Request(url=self.available_feeds % cc,
                               callback=self.generate_feed_requests,
                               meta={'feed': {'cc': cc, 'cc_name': response['feed_country'][cc]}})
 
@@ -61,6 +64,7 @@ class ItunesSpider(TomahawkCrawlSpider):
             for chart in cat['types']['list']:
                 if 'topimixes' in chart['urlPrefix']:
                     continue
+
                 url = self.generate_url(prefix=chart['urlPrefix'], cc=meta['cc'])
                 meta['name'] = chart['display']
                 requests.append(Request("{url}/{suffix}".format(url=url, suffix=chart['urlSuffix']),
@@ -83,6 +87,7 @@ class ItunesSpider(TomahawkCrawlSpider):
         c_type = self.extract_type_from_url(response.url)
         c_geo = response.meta['cc_name']
         c_desc = "%s %s %s" % (c_geo, name, c_type)
+        c_id = name
 
         chart.add_value("name", name)
         chart.add_value("type", c_type)
