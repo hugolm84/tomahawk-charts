@@ -22,10 +22,12 @@ from scrapy.item import Item, Field
 
 
 class TomahawkChartItem(Item):
-    id, name, description, source, origin, type, list = (Field(),)*7
-    parse_start_date, parse_end_date = (Field(),)*2
+    #Required
+    id, name, description, source, origin, type, list, size = (Field(),)*8
+    #Optional
     have_extra, geo, genre = (Field(),)*3
-    size = Field()
+    #Automatic
+    parse_start_date, parse_end_date, expires = (Field(),)*3
 
 
 class TomahawkItem(Item):
