@@ -21,7 +21,7 @@ from scrapy.selector import Selector
 from scrapy.exceptions import ContractFail
 from scrapy.utils.trackref import print_live_refs
 from scrapy import signals
-from datetime import datetime
+import datetime
 from w3lib.url import url_query_cleaner
 
 from tomahawk.itemloaders import TomahawkChartLoader
@@ -32,6 +32,8 @@ class TomahawkCrawlSpider(TomahawkSpiderHelper,CrawlSpider):
 
     _spider = None
     __chart_items = {}
+    # Default value 24h expiration (0-23)
+    expires = 23
 
     @classmethod
     def from_crawler(cls, crawler,  **kwargs):
@@ -74,7 +76,7 @@ class TomahawkCrawlSpider(TomahawkSpiderHelper,CrawlSpider):
 
     def do_process_item(self, chart):
         chart.add_value("size", len(chart.get_output_value("list")))
-        chart.add_value("parse_end_date", datetime.utcnow())
+        chart.add_value("parse_end_date", datetime.datetime.utcnow())
         return chart.load_item()
 
     def do_get_type(self, chart):
@@ -92,7 +94,8 @@ class TomahawkCrawlSpider(TomahawkSpiderHelper,CrawlSpider):
         chart = TomahawkChartLoader(selector=selector)
         chart.add_value("origin", response.url)
         chart.add_value("source", {'spider': self.name})
-        chart.add_value("parse_start_date", datetime.utcnow())
+        chart.add_value("parse_start_date", datetime.datetime.utcnow())
+        chart.add_value("expires", self.expires_in())
         return self.do_create_chart(chart, response)
 
     def __parse_as_chart__(self, response):
@@ -103,3 +106,8 @@ class TomahawkCrawlSpider(TomahawkSpiderHelper,CrawlSpider):
         refer = response.request.headers.get('Referer')
         chart = self.__chart_items[url_query_cleaner(refer)]
         yield self.do_parse(chart, response)
+
+    def expires_in(self):
+        import calendar
+        future = datetime.datetime.utcnow() + datetime.timedelta(hours=self.expires)
+        return calendar.timegm(future.timetuple())
