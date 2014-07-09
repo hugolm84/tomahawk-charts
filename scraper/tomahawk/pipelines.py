@@ -34,7 +34,10 @@ class TomahawkScrapingPipeline(object):
         return pipeline
 
     def spider_opened(self, spider):
-        store_path = "items/%s/%s/" % (BOT_NAME, spider.name)
+        if spider.crawler.settings['FEED_URI']:
+            store_path = os.path.dirname(spider.crawler.settings['FEED_URI'])
+        else:
+            store_path = "items/%s/%s" % (BOT_NAME, spider.name)
         self.store_path = self.create_spider_dir(store_path)
 
     def create_spider_dir(self, store):
@@ -43,7 +46,7 @@ class TomahawkScrapingPipeline(object):
         return store
 
     def item_storage_path(self, id):
-        item_storage_path = "%s%s.%s" % (self.store_path, id, FEED_FORMAT)
+        item_storage_path = "%s/%s.%s" % (self.store_path, id, FEED_FORMAT)
         return item_storage_path
 
     def export_item(self, item):
