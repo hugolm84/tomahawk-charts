@@ -64,6 +64,8 @@ class TomahawkScrapingPipeline(object):
         if not item['list'] or len(item['list']) == 0:
             raise DropItem("Missing list of items: %s" % item)
 
+        item['link'] = "%s/%s.json" %(self.store_path, item['id'])
+
         # Store this item in a separate file
         self.export_item(item)
         # Remove the the large list, pass it along to scrapyd

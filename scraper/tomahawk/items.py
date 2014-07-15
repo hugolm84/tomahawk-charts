@@ -27,7 +27,7 @@ class TomahawkChartItem(Item):
     #Optional
     have_extra, geo, genre = (Field(),)*3
     #Automatic
-    parse_start_date, parse_end_date, expires = (Field(),)*3
+    parse_start_date, parse_end_date, expires, link = (Field(),)*4
 
 
 class TomahawkItem(Item):

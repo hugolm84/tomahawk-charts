@@ -40,7 +40,11 @@ class TomahawkChartLoader(ItemLoader):
         if not self._values['id']:
             self.add_value('id', self._values['name'])
 
+        if not self._values['link']:
+            self.add_value("link", "NaN")
+
         item = self.item
+
         item_requires_keys = item.fields.keys()
         for key in self.optional_keys:
             item_requires_keys.remove(key)
