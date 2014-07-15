@@ -15,13 +15,16 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import datetime
+import calendar
+
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.selector import Selector
 from scrapy.exceptions import ContractFail
 from scrapy.utils.trackref import print_live_refs
 from scrapy import signals
-import datetime
+
 from w3lib.url import url_query_cleaner
 
 from tomahawk.itemloaders import TomahawkChartLoader
@@ -55,7 +58,7 @@ class TomahawkCrawlSpider(TomahawkSpiderHelper,CrawlSpider):
 
     @staticmethod
     def follow_link(xpath, allow, deny, callback = None, cb_kwargs={}):
-        return Rule(
+        return Rule (
             SgmlLinkExtractor(restrict_xpaths=(xpath,), allow=allow, deny=deny),
             follow=True, callback = callback, cb_kwargs=cb_kwargs
         )
@@ -108,6 +111,5 @@ class TomahawkCrawlSpider(TomahawkSpiderHelper,CrawlSpider):
         yield self.do_parse(chart, response)
 
     def expires_in(self):
-        import calendar
         future = datetime.datetime.utcnow() + datetime.timedelta(hours=self.expires)
-        return calendar.timegm(future.timetuple())
+        return  datetime.datetime.utcfromtimestamp(calendar.timegm(future.timetuple()))
