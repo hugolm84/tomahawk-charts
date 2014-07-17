@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+'''
 from tomahawkspider import TomahawkCrawlSpider
 from tomahawk.itemloaders import TomahawkItemLoader
 from scrapy.selector import Selector
@@ -34,20 +35,19 @@ class ExampleSpider(TomahawkCrawlSpider):
         "billboard.com"
     ]
 
-    '''
-    Rules simply parsing of pages that requires the spider to crawl away from the start_urls.
-        Using the "follow_link_as_chart" rule, we can tell the spider that each link scraped and followed should be
-        considered as a new chart. TomahawkCrawlSpider will call the unimplemented "do_create_chart" when the new chart
-        is initiated, and you can then add values to it based on the response you get.
 
-        Using the "follow_link_as_next" we can tell the spider that the link found in the xpath, leads to the next
-        page of the chart.
+    #Rules simply parsing of pages that requires the spider to crawl away from the start_urls.
+    #    Using the "follow_link_as_chart" rule, we can tell the spider that each link scraped and followed should be
+    #    considered as a new chart. TomahawkCrawlSpider will call the unimplemented "do_create_chart" when the new chart
+    #    is initiated, and you can then add values to it based on the response you get.
 
-        Callback: Both rules calls the unimplemented "do_parse" method.
+    #    Using the "follow_link_as_next" we can tell the spider that the link found in the xpath, leads to the next
+    #    page of the chart.
 
-        You can easily create custom rules via the "follow_link" method.
-            rule = TomahawkCrawlSpider.follow_link(xpath, allow_relative_urls, deny_relative_urls, callback, cb_kwags)
-    '''
+    #    Callback: Both rules calls the unimplemented "do_parse" method.
+
+    #    You can easily create custom rules via the "follow_link" method.
+    #        rule = TomahawkCrawlSpider.follow_link(xpath, allow_relative_urls, deny_relative_urls, callback, cb_kwags)
 
     chart_items_xpath   = '//span[@class="field-content"]'
     next_page_xpath     = '//li[@class="pager-next last"]'
@@ -68,20 +68,19 @@ class ExampleSpider(TomahawkCrawlSpider):
         ),
     )
 
-    '''
-    TomahawkSpiderHelper tries to match some string to a type from the chart name.
-        Usually a chart is named Top Rap Songs or Reggae Albums, but sometimes we need to specify what is what.
-        Define those names in self.artist|album|track_charts[] and the helper will map the name to the correct type.
-    '''
+
+    #TomahawkSpiderHelper tries to match some string to a type from the chart name.
+    #    Usually a chart is named Top Rap Songs or Reggae Albums, but sometimes we need to specify what is what.
+    #    Define those names in self.artist|album|track_charts[] and the helper will map the name to the correct type.
+
     artist_charts   = ['social 50', 'uncharted']
     album_charts    = ['soundtracks', 'billboard 200', 'tastemakers']
     track_charts    = ['the hot 100']
 
-    '''
-    This is a callback from TomahawkCrawlSpider, which gets called when a chart is created.
-        The CrawlSpider adds some necessary fields, like origin, parse_date and source (self.name) and passes it along
-        for us to modify.
-    '''
+    #This is a callback from TomahawkCrawlSpider, which gets called when a chart is created.
+    #    The CrawlSpider adds some necessary fields, like origin, parse_date and source (self.name) and passes it along
+    #    for us to modify.
+
     def do_create_chart(self, chart, response):
         # Extract the name of the chart from a xpath. In this case, the selector is set to the xpath passed to the rule
         name = extract('//h1[@id="page-title"]/text()', chart.selector)
@@ -95,9 +94,8 @@ class ExampleSpider(TomahawkCrawlSpider):
         chart.add_value("description", "Some chart description")
         return chart
 
-    '''
-    This is a callback from TomahawkCrawlSpider, which gets called when a link was followed as a chart or as a next_page
-    '''
+    #This is a callback from TomahawkCrawlSpider, which gets called when a link was followed as a chart or as a next_page
+
     def do_parse(self, chart = None, response = None):
         # Create a new xpath selector from the response
         selector = Selector(response)
@@ -130,3 +128,4 @@ class ExampleSpider(TomahawkCrawlSpider):
             return self.do_process_item(chart)
         # We know this chart has more data to be parsed, return None
         return None
+'''
