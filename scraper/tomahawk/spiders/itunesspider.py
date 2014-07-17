@@ -43,8 +43,8 @@ class ItunesSpider(TomahawkCrawlSpider):
 
         for cc in cc_en+cc_loc:
             yield Request(url=self.available_feeds % cc,
-                              callback=self.generate_feed_requests,
-                              meta={'feed': {'cc': cc, 'cc_name': response['feed_country'][cc]}})
+                          callback=self.generate_feed_requests,
+                          meta={'feed': {'cc': cc, 'cc_name': response['feed_country'][cc]}})
 
 
     def generate_url(self, prefix, cc=None, genre=None):
