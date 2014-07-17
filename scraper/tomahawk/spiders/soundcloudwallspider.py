@@ -63,7 +63,7 @@ class SoundCloudWallSpider(TomahawkCrawlSpider):
                 try:
                     metadata["artist"] = title[:title.index(delimiter)]
                     metadata["track"] = title[title.index(delimiter)+len(delimiter):]
-                except ValueError, e:
+                except ValueError:
                     continue
             else:
                 break
