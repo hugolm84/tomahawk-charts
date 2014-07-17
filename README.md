@@ -34,6 +34,11 @@ Compiling C modules on OSX using Xcode 5.1 we need to set some flags to not defa
     (scraper)$ export CPPFLAGS=-Qunused-arguments
     (scraper)$ pip install -r requirements.txt
 
+### Failing to build requirements
+If you fail to build requirement on osx, check if xcode command tools is installed:
+
+    $ xcode-select --install
+
 ##Create a spider
 Creating spiders should be as straight forward as
 
