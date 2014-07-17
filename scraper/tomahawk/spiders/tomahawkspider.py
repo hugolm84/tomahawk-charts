@@ -96,7 +96,7 @@ class TomahawkCrawlSpider(TomahawkSpiderHelper,CrawlSpider):
             selector = None
         chart = TomahawkChartLoader(selector=selector)
         chart.add_value("origin", response.url)
-        chart.add_value("source", {'spider': self.name})
+        chart.add_value("source", self.name)
         chart.add_value("parse_start_date", datetime.datetime.utcnow())
         chart.add_value("expires", self.expires_in())
         return self.do_create_chart(chart, response)
