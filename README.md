@@ -42,7 +42,7 @@ If you fail to build requirement on osx, check if xcode command tools is install
 ##Create a spider
 Creating spiders should be as straight forward as
 
-    scrapy genspider -t tomahawk Billboard billboard.com
+    scrapy genspider -t tomahawk MySpider MySpider.com
 
 ##Deploy
 Create egg file of the project
@@ -53,10 +53,18 @@ Create egg file of the project
 
 ###Deploy
 
-    (scraper)$ scrapy deploy default
+    (scraper)$ scrapyd-deploy
+
+    ´´´
+    scrapyd-deploy default -p tomahawk
+    Packing version r47-master
+    Deploying to project "tomahawk" in http://localhost:6800/addversion.json
+    Server response (200):
+    {"status": "ok", "project": "tomahawk", "version": "r47-master", "spiders": 9, "node_name": "spider-server"}
+    ´´´
 
     Schedule a scrape
-    (scraper)$ curl http://localhost:6800/schedule.json -d project=tomahawk_scraping -d spider=Billboard
+    (scraper)$ curl http://localhost:6800/schedule.json -d project=tomahawk -d spider=Billboard
 
 
 ###References:

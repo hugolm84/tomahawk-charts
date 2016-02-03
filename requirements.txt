@@ -1,3 +1,4 @@
 oauth2
 scrapy
 scrapyd
+scrapyd-client
