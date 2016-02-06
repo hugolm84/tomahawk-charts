@@ -54,18 +54,15 @@ Create egg file of the project
 ###Deploy
 
     (scraper)$ scrapyd-deploy
-
-    ´´´
     scrapyd-deploy default -p tomahawk
     Packing version r47-master
     Deploying to project "tomahawk" in http://localhost:6800/addversion.json
     Server response (200):
     {"status": "ok", "project": "tomahawk", "version": "r47-master", "spiders": 9, "node_name": "spider-server"}
-    ´´´
 
-    Schedule a scrape
+###Schedule a scrape
+
     (scraper)$ curl http://localhost:6800/schedule.json -d project=tomahawk -d spider=Billboard
-
 
 ###References:
     http://virtualenvwrapper.readthedocs.org/en/latest/
