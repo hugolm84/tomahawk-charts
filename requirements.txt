@@ -1,4 +1,4 @@
 oauth2
 scrapy
-scrapyd
+git+https://github.com/scrapy/scrapyd.git
 scrapyd-client
