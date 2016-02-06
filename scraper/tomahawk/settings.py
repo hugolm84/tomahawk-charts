@@ -24,7 +24,7 @@ ITEM_PIPELINES = {
 }
 DOWNLOADER_MIDDLEWARES = {
     'tomahawk.middleware.OauthMiddleware.OauthMiddleware': 400,
-    'scrapy.contrib.downloadermiddleware.ajaxcrawl.AjaxCrawlMiddleware': 401,
+    'scrapy.downloadermiddlewares.ajaxcrawl.AjaxCrawlMiddleware': 401,
 }
 
 USER_AGENT = 'Tomahawk Chart Service (+http://www.gettomahawk.com)'

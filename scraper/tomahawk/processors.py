@@ -18,8 +18,8 @@
 import re
 import dateutil.parser
 from datetime import datetime
-from scrapy import log
-from scrapy.contrib.loader.processor import arg_to_iter
+import logging as log
+from scrapy.utils.misc import arg_to_iter
 
 
 class PassThrough(object):
