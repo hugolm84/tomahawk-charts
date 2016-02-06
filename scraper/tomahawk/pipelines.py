@@ -16,33 +16,34 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import logging as log
 from scrapy import signals
-from scrapy.contrib.exporter import JsonLinesItemExporter
+from scrapy.exporters import JsonLinesItemExporter
 from scrapy.exceptions import DropItem
 from settings import FEED_FORMAT, BOT_NAME
 
 
 class TomahawkScrapingPipeline(object):
 
-    store_path = None
-
     @classmethod
-    def from_crawler(cls, crawler):
-        pipeline = cls()
+    def from_crawler(cls, crawler, **kwargs):
+        pipeline = cls(crawler, **kwargs)
         crawler.signals.connect(pipeline.spider_opened, signals.spider_opened)
-        #crawler.signals.connect(pipeline.spider_closed, signals.spider_closed)
         return pipeline
 
+    def __init__(self, crawler):
+        self.crawler = crawler
+
     def spider_opened(self, spider):
-        if spider.crawler.settings['FEED_URI']:
-            store_path = os.path.dirname(spider.crawler.settings['FEED_URI'])
+        if self.crawler.settings['FEED_URI']:
+            store_path = os.path.dirname(self.crawler.settings['FEED_URI'])
         else:
             store_path = "items/%s/%s" % (BOT_NAME, spider.name)
         self.store_path = self.create_spider_dir(store_path)
 
     def create_spider_dir(self, store):
         if not os.path.exists(os.path.dirname(store)):
-            os.makedirs(os.path.dirname(store))
+            os.makedirs(store)
         return store
 
     def item_storage_path(self, id):
