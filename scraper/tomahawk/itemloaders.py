@@ -15,8 +15,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from scrapy.contrib.loader import ItemLoader
-from scrapy.contrib.loader.processor import TakeFirst, MapCompose
+from scrapy.loader import ItemLoader
+from scrapy.loader.processors import TakeFirst, MapCompose, Join
 from scrapy.exceptions import ContractFail
 
 from .processors import DateTime, PassThrough, ListValidator, Slugify
@@ -69,7 +69,6 @@ class TomahawkChartLoader(ItemLoader):
 
 
 class TomahawkItemLoader(ItemLoader):
-
     default_item_class = TomahawkItem
     default_input_processor = MapCompose(strip)
-    default_output_processor = TakeFirst()
+    default_output_processor = Join()
