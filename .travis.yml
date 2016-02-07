@@ -16,9 +16,7 @@ matrix:
           env: BUILDENV=latest
 install:
     - pip install -r .travis/requirements-$BUILDENV.txt
-    - pip install pep8 --use-mirrors
-    - pip install https://github.com/dcramer/pyflakes/tarball/master
-    - pip install -q -e . --use-mirrors
+    - pip install .
 script:
     - trial scrapyd
 notifications:
@@ -27,6 +25,3 @@ notifications:
             - "irc.freenode.org#tomahawk.charts"
         use_notice: true
         skip_join: true
-before_script:
-  - "pep8 --exclude=migrations --ignore=E501,E225 scraper"
-  - pyflakes -x W scraper
