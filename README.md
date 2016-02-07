@@ -1,4 +1,4 @@
-#Tomahawk Charts
+#Tomahawk Charts [![Build Status](https://travis-ci.org/hugolm84/tomahawk-charts.svg?branch=master)](https://travis-ci.org/hugolm84/tomahawk-charts)
 
 Contains the scrapers/crawlers and webserivce that powers Tomahawk Player charts.
 
