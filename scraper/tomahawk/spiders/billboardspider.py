@@ -39,10 +39,7 @@ class BillboardSpider(TomahawkCrawlSpider):
         TomahawkCrawlSpider.follow_link_as_chart(
             xpath=chart_items_xpath,
             deny=['realtime'],
-        ),
-        TomahawkCrawlSpider.follow_link_as_next(
-            xpath=next_page_xpath,
-            allow=[r'\?page=[1-9]']
+            allow=['/charts/?']
         ),
     )
 
